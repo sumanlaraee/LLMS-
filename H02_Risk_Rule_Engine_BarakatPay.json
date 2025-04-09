@@ -1,0 +1,83 @@
+{
+    "static_risk_score": {
+        "age": {
+            "weight": 0.1,
+            "description": "Younger users may have higher risk"
+        },
+        "province": {
+            "weight": 0.1,
+            "description": "Some provinces have higher fraud risk"
+        },
+        "kyc_status": {
+            "weight": 0.1,
+            "description": "Unverified or L1 users are riskier"
+        },
+        "document_verified": {
+            "weight": 0.05,
+            "description": "OCR/MRZ validation"
+        },
+        "profile_type": {
+            "weight": 0.05,
+            "description": "Agent, PEP, merchant profiles"
+        }
+    },
+    "dynamic_risk_score": {
+        "device_change_count": {
+            "weight": 0.1,
+            "description": "Frequent device changes"
+        },
+        "ip_change_count": {
+            "weight": 0.1,
+            "description": "Frequent IP changes"
+        },
+        "location_mismatch_flag": {
+            "weight": 0.1,
+            "description": "Login location mismatch"
+        },
+        "transaction_amount": {
+            "weight": 0.1,
+            "description": "Unusual transaction amount"
+        },
+        "transaction_type": {
+            "weight": 0.1,
+            "description": "High-risk transaction types"
+        },
+        "transaction_time": {
+            "weight": 0.1,
+            "description": "Unusual time e.g., night transactions"
+        }
+    },
+    "total_score_formula": "static_risk_score + dynamic_risk_score",
+    "risk_tiers": [
+        {
+            "range": "0-25",
+            "tier": "Safe",
+            "action": "No action"
+        },
+        {
+            "range": "26-40",
+            "tier": "Moderate",
+            "action": "OTP or biometric fallback"
+        },
+        {
+            "range": "41-60",
+            "tier": "High",
+            "action": "Manual review or alert"
+        },
+        {
+            "range": "61-100",
+            "tier": "Critical",
+            "action": "STR/CTR trigger + session lock"
+        }
+    ],
+    "fallback_logic": {
+        "geo_ip_mismatch": "Ask for biometric or OTP",
+        "biometric_fail": "Switch to voice authentication",
+        "suspicious_device": "Recommend agent re-verification"
+    },
+    "shariah_controls": {
+        "interest_free": true,
+        "user_warning_first": true,
+        "manual_appeal_option": true
+    }
+}
